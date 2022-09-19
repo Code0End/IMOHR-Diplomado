@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - sword1
+  - enemy1
+  - eattack
+  - shield
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - suelo
+  - armas
+  - PostProcessing
+  - Not in Reflection
+  - piso
+  - salto
+  - enemy
+  - armas_visual
+  - jugador
+  - debris
+  - eattack
+  - pies
+  - armas2
+  - eattack2
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
