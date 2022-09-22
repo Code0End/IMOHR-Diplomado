@@ -7,11 +7,12 @@ public class shield1 : MonoBehaviour
     public GameObject Shield;
     public arma_sway sway;
     public bool defending = false;
-    bool impact;
+    bool impact,d;
 
     Animator anime;
 
     public BoxCollider bc;
+    Rigidbody rb;
 
     private void Start()
     {
@@ -20,7 +21,8 @@ public class shield1 : MonoBehaviour
     }
 
     void Update()
-    {        
+    {
+        if (d) return;
         if (Input.GetMouseButton(1))
         {
             shielddefend(true);
@@ -66,5 +68,27 @@ public class shield1 : MonoBehaviour
     {
         yield return new WaitForSeconds(t);
         impact = false;
+    }
+
+    public void drop_shield()
+    {
+        d = true;
+        rb = gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+        bc = gameObject.AddComponent(typeof(BoxCollider)) as BoxCollider;
+        bc.enabled = true;
+        rb.transform.parent = null;
+        rb.isKinematic = false;
+        SetLayerRecursively(gameObject, 13);
+        Destroy(gameObject.GetComponent<arma_sway>());
+        Destroy(gameObject.GetComponent<shield1>());
+    }
+
+    public static void SetLayerRecursively(GameObject go, int layerNumber)
+    {
+        if (go == null) return;
+        foreach (Transform trans in go.GetComponentsInChildren<Transform>(true))
+        {
+            trans.gameObject.layer = layerNumber;
+        }
     }
 }

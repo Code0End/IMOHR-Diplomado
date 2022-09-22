@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class enemy : MonoBehaviour
 {
 
-    private bool isdoor;
+    public bool isdoor;
     public bool di;
     public GameObject corpse;
 
@@ -16,6 +17,9 @@ public class enemy : MonoBehaviour
     [SerializeField] private AudioClip[] clips1;
 
     public enemy_comportamiento ec;
+    public NavMeshAgent agent;
+
+    public bool dz;
 
 
     private void OnCollisionEnter(Collision other)
@@ -34,17 +38,35 @@ public class enemy : MonoBehaviour
         //hb.UpdateHealth(hp / maxhp);
         if (hp <= 0)
         {
-            a_s[0].pitch = Random.Range(0.85f, 1.2f);
+            a_s[0].pitch = Random.Range(0.7f, 1.4f);
             a_s[0].PlayOneShot(clips1[0]);
             if (!di)
             {
-                ec.CancelInvoke();
-                ec.StopAllCoroutines();
-                ec.enabled = false;
+                if (!dz)
+                {                 
+                    ec.CancelInvoke();
+                    ec.StopAllCoroutines();
+                    agent.enabled = false;
+                    ec.enabled = false;
+                    gameObject.SetActive(false);
+                    corpse.SetActive(true);
+                }
+                else
+                {
+                    agent.enabled = false;
+                    ec.CancelInvoke();
+                    ec.StopAllCoroutines();
+                    ec.Drb();
+                    ec.enabled = false;
+                    gameObject.SetActive(false);
+                    corpse.SetActive(true);
+                }
             }
-            gameObject.SetActive(false);
-            corpse.SetActive(true);
-
+            else
+            {
+                gameObject.SetActive(false);
+                corpse.SetActive(true);
+            }
         }
         else
         {
@@ -57,16 +79,22 @@ public class enemy : MonoBehaviour
         {
             if (other.gameObject.tag == "sword1")
             {
-            if (isdoor = !true) return;
-            if (other.gameObject.GetComponent<espada_movimiento>().atacado) return;
-                taked(other.gameObject.GetComponent<espada_movimiento>().damage);
-                other.gameObject.GetComponent<espada_movimiento>().atacado = true;
+                if (!isdoor)
+                {
+                    if (other.gameObject.GetComponent<espada_movimiento>().atacado) return;
+                    taked(other.gameObject.GetComponent<espada_movimiento>().damage);
+                    other.gameObject.GetComponent<espada_movimiento>().atacado = true;
+                }
+                else
+                {
+                    taked(other.gameObject.GetComponent<espada_movimiento>().damage);
+                }
             }
-    }
+        }
 
     public void walksound()
     {
-        a_s[0].pitch = Random.Range(0.6f, 1f);
+        a_s[0].pitch = Random.Range(0.3f, 1.5f);
         a_s[0].PlayOneShot(clips1[2]);
     }
 

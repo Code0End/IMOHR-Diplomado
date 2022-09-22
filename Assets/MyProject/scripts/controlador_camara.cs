@@ -11,7 +11,7 @@ public class controlador_camara : MonoBehaviour
     float roty;
 
     public float tilta;
-    private float m = 0;
+    public bool d;
     float iv = 0f;
     float iv2 = 0f;
     float iv3 = 0f;
@@ -34,10 +34,13 @@ public class controlador_camara : MonoBehaviour
     {
         float mousex = Input.GetAxisRaw("Mouse X") * sens;
         float mousey = Input.GetAxisRaw("Mouse Y") * sens;
-        
-        iv = -Input.GetAxis("Horizontal") * tilta;
-        iv3 = Mathf.Lerp(iv, iv2, 0.5f);
-        iv2 = iv;
+
+        if (!d)
+        {
+            iv = -Input.GetAxis("Horizontal") * tilta;
+            iv3 = Mathf.Lerp(iv, iv2, 0.5f);
+            iv2 = iv;
+        }
 
         roty += mousex;
         rotx -= mousey;

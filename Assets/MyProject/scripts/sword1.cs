@@ -336,4 +336,14 @@ public class sword1 : MonoBehaviour
 
         return velocityXZ + velocityY;
     }
+
+    public void drop_sword()
+    {
+        espada_rb.transform.parent = null;
+        espada_rb.isKinematic = false;
+        Vector3 direccion = cam.transform.forward;
+        espada_rb.AddForce(direccion * fuerza * 0.7f, ForceMode.Impulse);
+        SetLayerRecursively(espada,13);
+        Destroy(gameObject.GetComponent<sword1>());
+    }
 }

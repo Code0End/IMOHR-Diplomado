@@ -10,10 +10,12 @@ public class barras : MonoBehaviour
 
     public void updatehp(float parte)
     {
+        if (barra_hp == null) return;
         barra_hp.fillAmount = parte;
     }
     public void updatestamina(float parte)
     {
+        if (barra_stamina == null) return;
         barra_stamina.fillAmount = parte;
     }
 }

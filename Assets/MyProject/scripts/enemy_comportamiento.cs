@@ -18,7 +18,7 @@ public class enemy_comportamiento : MonoBehaviour
     //Patrullando
     public Vector3 walkPoint;
     bool walkPointSet,wps2, dpatrullar,a,p,r;
-    public bool death;
+    public bool death,id;
     public float walkPointRange;
     int patrullaje = 0,ataque=0;
     float ar = 2f;
@@ -36,6 +36,9 @@ public class enemy_comportamiento : MonoBehaviour
     const string punch = "Giant@UnarmedAttack02";
     const string magic1 = "Giant@Win01 - Start";
     const string magic2 = "Giant@Spawn01";
+    const string overhead = "Giant@UnarmedAttack03_A";
+    const string step = "Giant@UnarmedAttack01";
+    const string falling = "Giant@Fall01";
 
     //ataques
     public Transform[] pro;
@@ -44,13 +47,14 @@ public class enemy_comportamiento : MonoBehaviour
     public Animator anime;
     public Light l;
     public ParticleSystem ps;
+    public Rigidbody rb;
 
     HDAdditionalLightData HDL;
 
 
     float danterior,f=2,f2;
 
-
+    bool estoysuelo,air,shout;
 
 
     private void Awake()
@@ -76,10 +80,38 @@ public class enemy_comportamiento : MonoBehaviour
         if (rangojugador && !rangoataquej) Perseguir();
         if (rangoataquej && rangojugador) Atacar();
 
+        if (air)
+        {
+            estoysuelo = Physics.Raycast(pro[0].transform.position, Vector3.down, 4f * 0.5f + 0.2f, suelo);
+            if (estoysuelo)
+            {
+                Destroy(rb);
+                agent.enabled = true;
+                air = false;
+                estoysuelo = false;
+                Transform instance = Instantiate(ptil[0], pro[1].transform).transform;
+                instance.parent = null;
+                ChangeAnimationState(idle);
+                StartCoroutine(reset_i(Random.Range(1f, 2.5f)));
+                Transform instance2 = Instantiate(ptil[3], transform).transform;
+                instance2.parent = null;
+                StartCoroutine(ds(4f,instance2));
+            }
+        }
+
     }
 
     private void Patrullar()
     {
+        if (air && estoysuelo) return;
+        if(ar != 2f && a)
+        {
+            ChangeAnimationState(walk);
+            patrullaje = 0;
+            dpatrullar = true;
+            walkPointSet = false;
+        }
+
         p = false;
         if (!dpatrullar)
             decidir_patrullar();
@@ -149,17 +181,21 @@ public class enemy_comportamiento : MonoBehaviour
 
     private void Perseguir()
     {
+        if (air && estoysuelo) return;
         r = true;
         if (!p)
         {
             p = true;
-            a_s[0].volume = 0.6f;
-            a_s[0].pitch = Random.Range(0.80f, 1f);
+
+            a_s[0].volume = Random.Range(0.4f,0.6f);
+            a_s[0].pitch = Random.Range(0.85f, 1.5f);
             a_s[0].PlayOneShot(clips1[0]);
+            shout = true;
+            StartCoroutine(reset_shout(5f));
         }
 
-
-        rangoataque = 10;
+        ar = 2f;
+        rangoataque = 50;
         agent.SetDestination(jugador.position);
         ChangeAnimationState(walk);
     }
@@ -168,94 +204,28 @@ public class enemy_comportamiento : MonoBehaviour
     {
         p = false;
 
-        if (r)
+        if (!id)
         {
-            ataque = Random.RandomRange(1, 10);
-            r = false;
-        }
 
-        if (ataque >= 6)
-        {
-            rangoataque = 20;
-            //Enemigo se queda quieto cuando ataca
-            agent.SetDestination(transform.position);
-            Vector3 targetpos = new Vector3(jugador.transform.position.x, transform.position.y, jugador.transform.position.z);
-            transform.LookAt(targetpos);
-
-            
-            if (a) return;
-                a = true;
-
-            
-            DOTween.To(() => f, x => f = x, 10, 0.5f);
-            StartCoroutine(reset_l(1f));
-            ps.Play();
-
-            a_s[0].volume = 0.6f;
-            a_s[0].pitch = Random.Range(0.85f, 1.2f);
-            a_s[0].PlayOneShot(clips1[2]);
-
-
-            
-            ChangeAnimationState(magic2);;
-            Invoke(nameof(objectSpawn), 1.25f);
-            StartCoroutine(reset_i(Random.Range(1.50f,2.5f)));
-            
-        }
-        else if (ataque >= 3 && ataque <= 5)
-        {
-            rangoataque = 30;
-            //Enemigo se queda quieto cuando ataca
-            agent.SetDestination(transform.position);
-
-            Vector3 targetpos = new Vector3(jugador.transform.position.x, transform.position.y, jugador.transform.position.z);
-            transform.LookAt(targetpos);
-
-            if (a) return;
-            a = true;
-
-
-            DOTween.To(() => f, x => f = x, 10, 0.5f);
-            StartCoroutine(reset_l(1f));
-            ps.Play();
-
-            a_s[0].volume = 0.6f;
-            a_s[0].pitch = Random.Range(0.85f, 1.2f);
-            a_s[0].PlayOneShot(clips1[2]);
-
-            ChangeAnimationState(magic1);
-            Invoke(nameof(objectSpawnp), 1.25f);
-            StartCoroutine(reset_i(Random.Range(2f, 2.7f)));
-
-        }
-        else if (ataque < 3)
-        {
-            Vector3 direction = jugador.position - transform.position;
-            Quaternion toRotation = Quaternion.LookRotation(direction);
-
-            if (!wps2)
+            if (r)
             {
-                if (!a)
-                {
-                    agent.SetDestination(jugador.position);
-                    ChangeAnimationState(walk);
-                }
+                ataque = Random.Range(1, 10);
+                r = false;
             }
 
-            Vector3 distanceToWalkPoint = transform.position - jugador.position;
-
-            //Walkpoint reached
-            if (distanceToWalkPoint.magnitude < ar)
+            if (ataque >= 4)
             {
-                ar = 5f;
+                rangoataque = 60;
+                //Enemigo se queda quieto cuando ataca
                 agent.SetDestination(transform.position);
-                wps2 = true;
-                if (a)
-                {
-                    transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
-                    return;
-                }
+                Vector3 targetpos = new Vector3(jugador.transform.position.x, transform.position.y, jugador.transform.position.z);
+                transform.LookAt(targetpos);
+
+
+                if (a) return;
                 a = true;
+
+
                 DOTween.To(() => f, x => f = x, 10, 0.5f);
                 StartCoroutine(reset_l(1f));
                 ps.Play();
@@ -264,16 +234,262 @@ public class enemy_comportamiento : MonoBehaviour
                 a_s[0].pitch = Random.Range(0.85f, 1.2f);
                 a_s[0].PlayOneShot(clips1[2]);
 
-                ChangeAnimationState(punch);
-                Invoke(nameof(objectSpawna), 0.7f);
-                StartCoroutine(reset_i(Random.Range(2f, 3.1f)));
+
+
+                ChangeAnimationState(magic2); ;
+                Invoke(nameof(objectSpawn), 1.25f);
+                StartCoroutine(reset_i(Random.Range(1.50f, 2.5f)));
+
             }
-            else
+            else if (ataque <= 3)
             {
-                ar = 2f;
-                wps2 = false;
+                rangoataque = 69;
+                //Enemigo se queda quieto cuando ataca
+                agent.SetDestination(transform.position);
+
+                Vector3 targetpos = new Vector3(jugador.transform.position.x, transform.position.y, jugador.transform.position.z);
+                transform.LookAt(targetpos);
+
+                if (a) return;
+                a = true;
+
+
+                DOTween.To(() => f, x => f = x, 10, 0.5f);
+                StartCoroutine(reset_l(1f));
+                ps.Play();
+
+                a_s[0].volume = 0.6f;
+                a_s[0].pitch = Random.Range(0.85f, 1.2f);
+                a_s[0].PlayOneShot(clips1[2]);
+
+                ChangeAnimationState(magic1);
+                Invoke(nameof(objectSpawnp), 1.25f);
+                StartCoroutine(reset_i(Random.Range(2f, 2.7f)));
+
+            }/*
+            else if (ataque < 3)
+            {
+                Vector3 direction = jugador.position - transform.position;
+                Quaternion toRotation = Quaternion.LookRotation(direction);
+
+                if (!wps2)
+                {
+                    if (!a)
+                    {
+                        agent.SetDestination(jugador.position);
+                        ChangeAnimationState(walk);
+                    }
+                }
+
+                Vector3 distanceToWalkPoint = transform.position - jugador.position;
+
+                //Walkpoint reached
+                if (distanceToWalkPoint.magnitude < ar)
+                {
+                    ar = 5f;
+                    agent.SetDestination(transform.position);
+                    wps2 = true;
+                    if (a)
+                    {
+                        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
+                        return;
+                    }
+                    a = true;
+                    DOTween.To(() => f, x => f = x, 10, 0.5f);
+                    StartCoroutine(reset_l(1f));
+                    ps.Play();
+
+                    a_s[0].volume = 0.6f;
+                    a_s[0].pitch = Random.Range(0.85f, 1.2f);
+                    a_s[0].PlayOneShot(clips1[2]);
+
+                    ChangeAnimationState(punch);
+                    Invoke(nameof(objectSpawna), 0.7f);
+                    StartCoroutine(reset_i(Random.Range(2f, 3.1f)));
+                }
+                else
+                {
+                    ar = 2f;
+                    wps2 = false;
+                }
+            }*/
+        }
+        else
+        {
+            rangoataque = 20f;
+            if (r)
+            {
+                ataque = Random.Range(1, 10);
+                r = false;
+                //ataque = 1;
             }
-        }   
+
+            if (ataque >= 6)
+            {
+                Vector3 direction = jugador.position - transform.position;
+                Quaternion toRotation = Quaternion.LookRotation(direction);
+
+                if (!wps2)
+                {
+                    if (!a)
+                    {
+                        agent.SetDestination(jugador.position);
+                        ChangeAnimationState(walk);
+                    }
+                }
+
+                Vector3 distanceToWalkPoint = transform.position - jugador.position;
+
+                //Walkpoint reached
+                if (distanceToWalkPoint.magnitude < ar)
+                {
+                    ar = 5f;
+                    agent.SetDestination(transform.position);
+                    wps2 = true;
+                    if (a)
+                    {
+                        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
+                        return;
+                    }
+                    a = true;
+                    DOTween.To(() => f, x => f = x, 10, 0.5f);
+                    StartCoroutine(reset_l(1f));
+                    ps.Play();
+
+                    a_s[0].volume = 0.6f;
+                    a_s[0].pitch = Random.Range(0.85f, 1.2f);
+                    a_s[0].PlayOneShot(clips1[2]);
+
+                    ChangeAnimationState(punch);
+                    Invoke(nameof(objectSpawna), 0.7f);
+                    StartCoroutine(reset_i(Random.Range(2f, 2.5f)));
+                }
+                else
+                {
+                    ar = 2f;
+                    wps2 = false;
+                }
+
+            }
+            else if (ataque >= 3 && ataque <= 5)
+            {
+                Vector3 direction = jugador.position - transform.position;
+                Quaternion toRotation = Quaternion.LookRotation(direction);
+
+                if (!wps2)
+                {
+                    if (!a)
+                    {
+                        agent.SetDestination(jugador.position);
+                        ChangeAnimationState(walk);
+                    }
+                }
+
+                Vector3 distanceToWalkPoint = transform.position - jugador.position;
+
+                //Walkpoint reached
+                if (distanceToWalkPoint.magnitude < ar)
+                {
+                    ar = 5f;
+                    agent.SetDestination(transform.position);
+                    wps2 = true;
+                    if (a)
+                    {
+                        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
+                        return;
+                    }
+                    a = true;
+                    DOTween.To(() => f, x => f = x, 10, 0.5f);
+                    StartCoroutine(reset_l(1f));
+                    ps.Play();
+
+                    a_s[0].volume = 0.6f;
+                    a_s[0].pitch = Random.Range(0.85f, 1.2f);
+                    a_s[0].PlayOneShot(clips1[2]);
+
+                    ChangeAnimationState(overhead);
+                    Invoke(nameof(objectSpawna), 0.7f);
+                    StartCoroutine(reset_i(Random.Range(2f, 2.5f)));
+                }
+                else
+                {
+                    ar = 2f;
+                    wps2 = false;
+                }
+            }
+            else if (ataque < 3 && ataque > 1)
+            {
+                Vector3 direction = jugador.position - transform.position;
+                Quaternion toRotation = Quaternion.LookRotation(direction);
+
+                if (!wps2)
+                {
+                    if (!a)
+                    {
+                        agent.SetDestination(jugador.position);
+                        ChangeAnimationState(walk);
+                        ar = 6f;
+                    }
+                }
+
+                Vector3 distanceToWalkPoint = transform.position - jugador.position;
+
+                //Walkpoint reached
+                if (distanceToWalkPoint.magnitude < ar)
+                {
+                    ar = 10f;
+                    agent.SetDestination(transform.position);
+                    wps2 = true;
+                    if (a)
+                    {
+                        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
+                        return;
+                    }
+                    a = true;
+                    DOTween.To(() => f, x => f = x, 10, 0.5f);
+                    StartCoroutine(reset_l(1f));
+                    ps.Play();
+
+                    a_s[0].volume = 0.6f;
+                    a_s[0].pitch = Random.Range(0.85f, 1.2f);
+                    a_s[0].PlayOneShot(clips1[2]);
+
+                    ChangeAnimationState(step);
+                    Invoke(nameof(objectSpawng), 0.9f);
+                    StartCoroutine(reset_i(Random.Range(2f, 3.1f)));
+                }
+                else
+                {
+                    ar = 2f;
+                    wps2 = false;
+                }
+            }
+            else if (ataque == 1)
+            {
+                rangoataque = 50f;
+                Vector3 direction = jugador.position - transform.position;
+                Quaternion toRotation = Quaternion.LookRotation(direction);
+                                
+                if (a)
+                    {
+                        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
+                        return;
+                    }
+                    a = true;
+                    DOTween.To(() => f, x => f = x, 10, 0.5f);
+                    StartCoroutine(reset_l(1f));
+                    ps.Play();
+
+                    a_s[0].volume = 0.6f;
+                    a_s[0].pitch = Random.Range(0.85f, 1.2f);
+                    if(!shout)
+                        a_s[0].PlayOneShot(clips1[2]);
+
+                    ChangeAnimationState(falling);
+                    Invoke(nameof(objectSpawnf), 0.0f);
+                    //StartCoroutine(reset_i(Random.Range(2f, 3.1f)));
+                }
+            }
     }
 
     void ChangeAnimationState(string newState)
@@ -287,9 +503,9 @@ public class enemy_comportamiento : MonoBehaviour
     {
         yield return new WaitForSeconds(t);
         a = false;
-        if(ataque < 3)
+        if(ataque < 3 && id == false)
         {
-            var i = Random.RandomRange(1, 6); 
+            var i = Random.Range(1, 6); 
             if(i <= 3)
                 r = true;
         }
@@ -304,6 +520,18 @@ public class enemy_comportamiento : MonoBehaviour
         yield return new WaitForSeconds(t);
         DOTween.To(() => f, x => f = x, 2, 0.5f);
         ps.Stop();
+    }
+
+    IEnumerator reset_shout(float t)
+    {
+        yield return new WaitForSeconds(t);
+        shout = false;
+    }
+
+    IEnumerator reset_air(float t)
+    {
+        yield return new WaitForSeconds(t);
+        air = true;
     }
 
     public Vector3 RandomNavmeshLocation(float radius) {
@@ -351,6 +579,37 @@ public class enemy_comportamiento : MonoBehaviour
         StartCoroutine(reset_a(1f));
     }
 
+    IEnumerator ds(float t,Transform ts)
+    {
+        yield return new WaitForSeconds(t);
+        Destroy(ts.gameObject);
+    }
+
+    void objectSpawnf()
+    {
+        agent.enabled = false;
+        rb = gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+        Transform punto_relativo = jugador.GetComponent<controlador_movimiento>().fspot.transform;
+        Vector3 puntobajo = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
+        float punto_r = punto_relativo.position.y - puntobajo.y;
+        float punto_arco = punto_r + 7f;
+        if (punto_r < 0) punto_arco = 2f;
+
+        rb.velocity = calcular_velocidad_salto(transform.position, punto_relativo.position, punto_arco);
+
+        StartCoroutine(reset_air(0.5f));
+    }
+
+    void objectSpawng()
+    {
+        Transform instance = Instantiate(ptil[1], pro[1].transform).transform;
+        instance.parent = null;
+        Transform instance2 = Instantiate(ptil[3], transform).transform;
+        instance2.parent = null;
+        StartCoroutine(ds(2f, instance2));
+        StartCoroutine(reset_a(0.8f));
+    }
+
     IEnumerator reset_a(float t)
     {
         yield return new WaitForSeconds(t);
@@ -370,5 +629,9 @@ public class enemy_comportamiento : MonoBehaviour
         return velocityXZ + velocityY;
     }
 
+    public void Drb()
+    {
+        Destroy(rb);
+    }
 }
 

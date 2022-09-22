@@ -6,7 +6,7 @@ public class debris : MonoBehaviour
 {
     void Awake()
     {
-        Invoke(nameof(apagar_debris), 5f);
+        Invoke(nameof(apagar_debris), 10f);
     }
 
     private void apagar_debris()

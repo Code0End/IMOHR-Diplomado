@@ -35,6 +35,7 @@ public class controlador_movimiento : MonoBehaviour
     [SerializeField] private AudioClip[] clips1;
     [SerializeField] private ParticleSystem[] p_s;
     [SerializeField] private agitar agitar;
+    public GameObject fspot;
     public bool detener = false;
     public bool parabola = false;
 
@@ -47,10 +48,7 @@ public class controlador_movimiento : MonoBehaviour
 
     public Rigidbody rb;
 
-    private float dt = 0;
-    private int iplus = 0;
-    private float iminus = 0;
-    private int jumping = 0;
+    private int jumping = 1;
 
     private void Start()
     {
@@ -61,7 +59,7 @@ public class controlador_movimiento : MonoBehaviour
         escalaYini = transform.localScale.y;
         deslizamiento = deslizar_fuerza;
         tasa_deslizado = deslizar_fuerza / deslizar_tiempo;
-    }
+        }
 
     private void Update()
     {
@@ -121,7 +119,6 @@ public class controlador_movimiento : MonoBehaviour
         inputh = Input.GetAxisRaw("Horizontal");
         inputv = Input.GetAxisRaw("Vertical");
 
-        bool abajo = true;
         //salto
         if (Input.GetKey(tecla_salto) && salto_l && suelo)
         {

@@ -8,6 +8,7 @@ TagManager:
   - enemy1
   - eattack
   - shield
+  - dz
   layers:
   - Default
   - TransparentFX
@@ -29,9 +30,9 @@ TagManager:
   - pies
   - armas2
   - eattack2
-  - 
-  - 
-  - 
+  - dz
+  - fake
+  - debris2
   - 
   - 
   - 
