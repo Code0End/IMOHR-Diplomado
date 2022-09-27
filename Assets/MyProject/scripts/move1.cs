@@ -4,17 +4,24 @@ using UnityEngine;
 
 public class move1 : MonoBehaviour
 {
+    public Transform[] tr;
+    Vector3 start, end;
 
-    public float speed = 10f;
-    public Rigidbody pro_rigid;
-
-    void Start()
+    void OnEnable()
     {
-        //pro_rigid.velocity = transform.right * speed;
+
+        transform.position = tr[1].position;
+        Invoke(nameof(ddd), 1.3f);
     }
 
     void Update()
     {
-        pro_rigid.velocity = -transform.forward * speed;
+        
+        transform.position = tr[1].position;
+    }
+
+    void ddd()
+    {
+        Destroy(this);
     }
 }

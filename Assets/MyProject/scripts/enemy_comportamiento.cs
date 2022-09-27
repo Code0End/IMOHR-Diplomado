@@ -120,6 +120,7 @@ public class enemy_comportamiento : MonoBehaviour
         {
             if (!walkPointSet)
             {
+                if (agent == !enabled) return;
                 walkPoint = RandomNavmeshLocation(walkPointRange);
                 agent.SetDestination(walkPoint);
             }

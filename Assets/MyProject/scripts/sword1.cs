@@ -45,7 +45,7 @@ public class sword1 : MonoBehaviour
     float vol;
     float reparto;
 
-    void Start()
+    void Awake()
     {
         posoriginal = espada.transform.localPosition;
         rotoriginal = espada.transform.localEulerAngles;
@@ -136,7 +136,7 @@ public class sword1 : MonoBehaviour
 
     public void swordthrow()
     {
-        shield.shielddefend(false);
+        //shield.shielddefend(false);
         can_attack = false;
         Animator anim = Sword.GetComponent<Animator>();
         anim.SetTrigger("throw1");

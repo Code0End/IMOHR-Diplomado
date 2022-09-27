@@ -43,14 +43,18 @@ public class controlador_movimiento : MonoBehaviour
     float inputv;
     public KeyCode tecla_salto = KeyCode.Space;
     public KeyCode tecla_agache = KeyCode.LeftControl;
+    public KeyCode tecla_pausa = KeyCode.Escape;
 
     Vector3 direc_mov;
 
     public Rigidbody rb;
 
+    public movimientos_ui[] mui;
+
+
     private int jumping = 1;
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
@@ -144,6 +148,11 @@ public class controlador_movimiento : MonoBehaviour
                 parts = true;
             }
         }
+        if (Input.GetKeyDown(tecla_pausa))
+        {
+            mui[0].click_pause();
+        }
+
         //levantar
         if (Input.GetKeyUp(tecla_agache))
             {

@@ -14,7 +14,7 @@ public class shield1 : MonoBehaviour
     public BoxCollider bc;
     Rigidbody rb;
 
-    private void Start()
+    private void Awake()
     {
         anime = Shield.GetComponent<Animator>();
         bc.enabled = false;

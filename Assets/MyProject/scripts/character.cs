@@ -27,6 +27,7 @@ public class character : MonoBehaviour
     [SerializeField] private Image[] images;
     [SerializeField] private controlador_camara ccamara;
     [SerializeField] private GameObject[] ui_derrotado;
+    [SerializeField] private manejador_gameplay[] mg;
 
     public Volume volumen;
     private Vignette v;
@@ -36,7 +37,7 @@ public class character : MonoBehaviour
     Rigidbody rb;
     int a=0;
 
-    private void Start()
+    private void Awake()
     {
         volumen.profile.TryGet<Vignette>(out v);
         volumen.profile.TryGet<ColorAdjustments>(out s);
@@ -137,12 +138,23 @@ public class character : MonoBehaviour
         ui_derrotado[4].SetActive(true);
         ui_derrotado[2].SetActive(true);
 
+        mg[0].on = false;
+        mg[0].gameend();
+
         sword.drop_sword();
         shield.drop_shield();
         SetLayerRecursively(gameObject, 0);
         gameObject.tag = "Untagged";
         rb = gameObject.GetComponent<Rigidbody>();
         ccamara.d = true;
+
+        a_s[0].pitch = 1f;
+        a_s[0].volume = 0.1f;
+        a_s[0].spatialBlend = 0f;
+        a_s[0].PlayOneShot(clips1[2]);
+        Destroy(a_s[1]);
+
+
     }
 
     public void cambiar_sa()

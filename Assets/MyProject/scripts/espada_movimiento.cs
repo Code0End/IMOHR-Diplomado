@@ -18,6 +18,7 @@ public class espada_movimiento : MonoBehaviour
 
     const string enemy = "enemy1";
     const string proyectile = "eattack";
+    const string end_zone = "ez";
 
     void FixedUpdate()
     {

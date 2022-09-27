@@ -86,9 +86,13 @@ MonoBehaviour:
   rb: {fileID: 6150292569922306408}
   sc: {fileID: 0}
   bc: {fileID: 7993324286349172235}
+  L: {fileID: 0}
   p: 0
   t: 0
   m: 1
+  g: 0
+  dz: 0
+  w: 0
 --- !u!82 &4147425868586824934
 AudioSource:
   m_ObjectHideFlags: 0
@@ -98,7 +102,7 @@ AudioSource:
   m_GameObject: {fileID: 6999715225792491819}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 34bbef52a6ecbe742a3b7e24e7bae56e, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1

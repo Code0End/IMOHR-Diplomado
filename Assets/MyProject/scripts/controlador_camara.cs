@@ -5,8 +5,10 @@ using DG.Tweening;
 
 public class controlador_camara : MonoBehaviour
 {
-    [SerializeField] private float sens;
+    public float sens;
     [SerializeField] private controlador_movimiento controlador;
+    [SerializeField] private opciones opciones;
+
     float rotx;
     float roty;
 
@@ -24,10 +26,11 @@ public class controlador_camara : MonoBehaviour
     private float[] m_rotarrayy = new float[m_maxrotcache];
     private int m_rotcacheindex = 0;
 
-    void Start()
+    void OnEnable()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //sens = opciones.sens;
     }
 
     void Update()
@@ -87,4 +90,9 @@ public class controlador_camara : MonoBehaviour
         GetComponent<Camera>().DOFieldOfView(valor, 0.25f);
     }
 
+    public void cambiarsens(float v)
+    {
+        sens = v;
     }
+
+}

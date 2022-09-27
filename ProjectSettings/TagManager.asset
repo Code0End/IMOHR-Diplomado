@@ -9,6 +9,7 @@ TagManager:
   - eattack
   - shield
   - dz
+  - ez
   layers:
   - Default
   - TransparentFX
@@ -33,8 +34,8 @@ TagManager:
   - dz
   - fake
   - debris2
-  - 
-  - 
+  - TITLE
+  - ui2
   - 
   - 
   - 
@@ -45,4 +46,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: ui3
+    uniqueID: 4123357163
     locked: 0
