@@ -19,6 +19,8 @@ public class enemy : MonoBehaviour
     public enemy_comportamiento ec;
     public NavMeshAgent agent;
 
+    GameObject gamem;
+
     public bool dz;
 
 
@@ -37,7 +39,7 @@ public class enemy : MonoBehaviour
         hp = hp - d;
         //hb.UpdateHealth(hp / maxhp);
         if (hp <= 0)
-        {
+        {          
             a_s[0].pitch = Random.Range(0.7f, 1.4f);
             a_s[0].PlayOneShot(clips1[0]);
             if (!di)
@@ -48,8 +50,11 @@ public class enemy : MonoBehaviour
                     ec.StopAllCoroutines();
                     agent.enabled = false;
                     ec.enabled = false;
+                    gamem = GameObject.Find("gamemanager");
+                    gamem.GetComponent<manejador_gameplay>().enemigos_derrotados++;
                     gameObject.SetActive(false);
                     corpse.SetActive(true);
+                    
                 }
                 else
                 {
@@ -58,8 +63,11 @@ public class enemy : MonoBehaviour
                     ec.StopAllCoroutines();
                     ec.Drb();
                     ec.enabled = false;
+                    gamem = GameObject.Find("gamemanager");
+                    gamem.GetComponent<manejador_gameplay>().enemigos_derrotados++;
                     gameObject.SetActive(false);
                     corpse.SetActive(true);
+
                 }
             }
             else

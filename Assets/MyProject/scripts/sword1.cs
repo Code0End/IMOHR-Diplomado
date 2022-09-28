@@ -124,9 +124,10 @@ public class sword1 : MonoBehaviour
 
     public void swordattack()
     {
+        if (Time.timeScale == 0) return;
         can_attack = false;
         Animator anim = Sword.GetComponent<Animator>();
-        anim.SetBool("attack",true);
+        anim.SetBool("attack",true);     
         a_s[0].pitch = Random.Range(0.85f, 1.2f);
         a_s[0].PlayOneShot(clips1[0]);
         StartCoroutine(reset_attack_cooldown(0.4f));
@@ -136,6 +137,7 @@ public class sword1 : MonoBehaviour
 
     public void swordthrow()
     {
+        if (Time.timeScale == 0) return;
         //shield.shielddefend(false);
         can_attack = false;
         Animator anim = Sword.GetComponent<Animator>();
@@ -151,6 +153,7 @@ public class sword1 : MonoBehaviour
 
     public void swordattack_air()
     {
+        if (Time.timeScale == 0) return;
         can_attack = false;
         Animator anim = Sword.GetComponent<Animator>();
         anim.SetTrigger("attack_air");
@@ -163,6 +166,7 @@ public class sword1 : MonoBehaviour
 
     public void swordattack_fall()
     {
+        if (Time.timeScale == 0) return;
         espada_mv[1].damage = 70;
         Animator anim = Sword.GetComponent<Animator>();
         anim.SetTrigger("attack_fall");
@@ -175,6 +179,7 @@ public class sword1 : MonoBehaviour
 
     public void sword_start_recover()
     {
+        if (Time.timeScale == 0) return;
         pos_jalar = espada.transform.position;
         espada_rb.isKinematic = false;
         jalando = true;
@@ -186,6 +191,7 @@ public class sword1 : MonoBehaviour
 
     public void sword_catch()
     {
+        if (Time.timeScale == 0) return;
         espada_rb.interpolation = RigidbodyInterpolation.None;
         agitar.Truama += 0.1f;
         SetLayerRecursively(espada, 18);
@@ -207,6 +213,7 @@ public class sword1 : MonoBehaviour
 
     public void jump_to_sword()
     {
+        if (Time.timeScale == 0) return;
         Vector3 fromPosition = posi.position;
         Vector3 toPosition = espada_bc.bounds.center;
         Vector3 direction = toPosition - fromPosition;
@@ -226,6 +233,7 @@ public class sword1 : MonoBehaviour
 
     public void execute_jump()
     {
+        if (Time.timeScale == 0) return;
         mov.parabola = false;
         mov.detener = true;
         Vector3 puntobajo = new Vector3(mov.transform.position.x, mov.transform.position.y - 1f, mov.transform.position.z);

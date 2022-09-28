@@ -28,6 +28,7 @@ public class character : MonoBehaviour
     [SerializeField] private controlador_camara ccamara;
     [SerializeField] private GameObject[] ui_derrotado;
     [SerializeField] private manejador_gameplay[] mg;
+    public movimientos_ui[] mui;
 
     public Volume volumen;
     private Vignette v;
@@ -75,7 +76,7 @@ public class character : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.R))
             {
                 SceneManager.LoadScene(0);
-            }
+            }            
         }
         if (stamina < maxstamina)
         {
@@ -83,12 +84,16 @@ public class character : MonoBehaviour
         }
         if (w)
         {
-            //var color = new Color(f3, f4, f5);
             Color color = new Vector4(f3, f4, f5, 1.0f);
             s.colorFilter.value = color;
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                mg[0].Save(mg[0].GD);
                 SceneManager.LoadScene(0);
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                mui[0].click_pause();
             }
         }
     }
@@ -136,7 +141,7 @@ public class character : MonoBehaviour
 
         ui_derrotado[3].SetActive(true);
         ui_derrotado[4].SetActive(true);
-        ui_derrotado[2].SetActive(true);
+        ui_derrotado[2].SetActive(true);      
 
         mg[0].on = false;
         mg[0].gameend();
@@ -152,8 +157,7 @@ public class character : MonoBehaviour
         a_s[0].volume = 0.1f;
         a_s[0].spatialBlend = 0f;
         a_s[0].PlayOneShot(clips1[2]);
-        Destroy(a_s[1]);
-
+        Destroy(a_s[1]);    
 
     }
 

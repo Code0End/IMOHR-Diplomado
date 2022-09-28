@@ -29,5 +29,7 @@ public class opciones : MonoBehaviour
     public void timer_onscreen(bool b)
     {
         cm.timer = b;
+        if (cm.game_started)
+            cm.timerturn(b);
     }
 }

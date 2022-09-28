@@ -49,8 +49,7 @@ public class controlador_movimiento : MonoBehaviour
 
     public Rigidbody rb;
 
-    public movimientos_ui[] mui;
-
+    public movimientos_ui[] mui;    
 
     private int jumping = 1;
 

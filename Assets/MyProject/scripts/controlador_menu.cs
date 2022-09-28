@@ -17,6 +17,7 @@ public class controlador_menu : MonoBehaviour
     [SerializeField] private camerarotate cr;
     [SerializeField] private manejador_gameplay mg;
     public bool timer;
+    public bool game_started;
 
 
     void Awake()
@@ -34,6 +35,7 @@ public class controlador_menu : MonoBehaviour
 
     public void game_start()
     {
+        game_started = true;
         cr.enabled = false;
         images[0].SetActive(true);
         images[1].SetActive(true);
@@ -53,5 +55,14 @@ public class controlador_menu : MonoBehaviour
         Destroy(gameObject);
     }
 
-
+    public void timerturn(bool tt)
+    {
+        if (tt)
+            images[4].SetActive(true);
+        else
+        {
+            images[4].GetComponent<movimientos_ui>().StopAllCoroutines();
+            images[4].GetComponent<movimientos_ui>().salida();
+        }
+    }
 }

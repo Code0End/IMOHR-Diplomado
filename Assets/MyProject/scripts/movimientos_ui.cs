@@ -5,11 +5,13 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class movimientos_ui : MonoBehaviour
 {
-    public int estado = 0;
-    public bool destruir = false;
+    public int estado = 0,levelnum=0;
+    public bool destruir = false, levelshowcase;
 
     public GameObject padrecam;
 
@@ -17,6 +19,10 @@ public class movimientos_ui : MonoBehaviour
 
     [SerializeField] private AudioSource[] a_s;
     [SerializeField] private AudioClip[] clips1;
+    [SerializeField] manejador_gameplay mg;
+    public Sprite[] sprite;
+    public Image img;
+    public TMP_Text texto;
 
     //agitar cámara
     public bool agitar_activo = true;
@@ -34,7 +40,7 @@ public class movimientos_ui : MonoBehaviour
     public Volume volumen;
     public movimientos_ui mui1;
     private ColorAdjustments s;
-    bool e,bp,paused;
+    bool e,bp,paused,levelloaded;
 
     public float f3 = 1f, f4 = 1f, f5 = 1f;
 
@@ -66,6 +72,37 @@ public class movimientos_ui : MonoBehaviour
     {
         transform.localScale = new Vector3(0, 0, 0);
         entrada();
+        if (levelshowcase)
+        {
+            if (levelnum == 1)
+            {
+                if (mg.istheredata[0])
+                {
+                    img.sprite = sprite[1];
+                    texto.text = ((mg.levels[0].ToString() + " " + mg.levelsoutcomes[0] + " " + mg.levelstimes[0]));
+                    levelloaded = true;
+                }
+                else
+                {
+                    img.sprite = sprite[0];
+                    texto.text = "- -        -";
+                }
+            }
+            else
+            {
+                if (mg.istheredata[1])
+                {
+                    img.sprite = sprite[1];
+                    texto.text = ((mg.levels[1].ToString() + " " + mg.levelsoutcomes[1] + " " + mg.levelstimes[1]));
+                    levelloaded = true;
+                }
+                else
+                {
+                    img.sprite = sprite[0];
+                    texto.text = "- -        -";
+                }
+            }
+        }
     }
 
     public void entrada()
@@ -125,6 +162,17 @@ public class movimientos_ui : MonoBehaviour
         LeanTween.rotate(gameObject, Vector3.zero, tiempo_random).setEase(LeanTweenType.easeInOutSine).setOnComplete(rot_1).setIgnoreTimeScale(true);
     }
 
+    public void click_loadlevel()
+    {
+        if (!levelloaded) return;
+        if (bp) return;
+        bp = true;
+        StartCoroutine(gs4(0.0f, true));
+        Truama += 0.8f;
+        a_s[0].pitch = Random.Range(0.85f, 1.2f);
+        a_s[0].PlayOneShot(clips1[0]);
+        StartCoroutine(gs6(1f,levelnum));
+    }
     public void click()
     {
         if (bp) return;
@@ -285,6 +333,13 @@ public class movimientos_ui : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    IEnumerator gs6(float t, int i)
+    {
+        yield return new WaitForSeconds(t);
+        bp = false;
+        SceneManager.LoadScene(i);
+    }
+
     public void gs3()
     {
         bp = false;
@@ -347,6 +402,6 @@ public class movimientos_ui : MonoBehaviour
     void Pausar()
     {
         Time.timeScale = 0f;
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 }
