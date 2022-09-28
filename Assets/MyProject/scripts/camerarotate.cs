@@ -11,6 +11,7 @@ public class camerarotate : MonoBehaviour
     float mousex;
     float mousey;
     [SerializeField] Transform orient;
+    public bool post;
 
     void OnEnable()
     {
@@ -18,6 +19,17 @@ public class camerarotate : MonoBehaviour
         Cursor.visible = false;
         mousex = 0;
         mousey = 0;
+    }
+
+    private void Start()
+    {
+        if (post)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            mousex = 0;
+            mousey = 0;
+        }
     }
 
     void Update()

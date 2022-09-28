@@ -13,7 +13,7 @@ public class controlador_camara : MonoBehaviour
     float roty;
 
     public float tilta;
-    public bool d;
+    public bool d,post;
     float iv = 0f;
     float iv2 = 0f;
     float iv3 = 0f;
@@ -31,6 +31,15 @@ public class controlador_camara : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         //sens = opciones.sens;
+    }
+
+    void Start()
+    {
+        if (post)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     void Update()

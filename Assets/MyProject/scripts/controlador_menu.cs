@@ -16,14 +16,18 @@ public class controlador_menu : MonoBehaviour
     [SerializeField] private GameObject[] weapon_holders;
     [SerializeField] private camerarotate cr;
     [SerializeField] private manejador_gameplay mg;
-    public bool timer;
+    public bool timer,post;
     public bool game_started;
 
 
     void Awake()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (!post)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            Time.timeScale = 1F;
+        }
     }
 
     public void game_drop()

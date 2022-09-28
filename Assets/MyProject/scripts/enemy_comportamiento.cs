@@ -121,7 +121,7 @@ public class enemy_comportamiento : MonoBehaviour
             if (!walkPointSet)
             {
                 walkPoint = RandomNavmeshLocation(walkPointRange);
-                if (agent == enabled)
+                if (agent.isActiveAndEnabled && agent.isOnNavMesh)
                     agent.SetDestination(walkPoint);
             }
 

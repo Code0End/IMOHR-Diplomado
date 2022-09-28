@@ -37,7 +37,8 @@ public class controlador_movimiento : MonoBehaviour
     [SerializeField] private agitar agitar;
     public GameObject fspot;
     public bool detener = false;
-    public bool parabola = false;
+    public bool parabola = false,post;
+
 
     float inputh;
     float inputv;
@@ -62,7 +63,23 @@ public class controlador_movimiento : MonoBehaviour
         escalaYini = transform.localScale.y;
         deslizamiento = deslizar_fuerza;
         tasa_deslizado = deslizar_fuerza / deslizar_tiempo;
+    }
+
+    /*
+    private void Start()
+    {
+        if (post)
+        {
+            rb = GetComponent<Rigidbody>();
+            rb.freezeRotation = true;
+            salto_l = true;
+            canDash = true;
+            escalaYini = transform.localScale.y;
+            deslizamiento = deslizar_fuerza;
+            tasa_deslizado = deslizar_fuerza / deslizar_tiempo;
         }
+    }
+    */
 
     private void Update()
     {

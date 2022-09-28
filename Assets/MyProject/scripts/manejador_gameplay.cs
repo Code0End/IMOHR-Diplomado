@@ -17,7 +17,7 @@ public class manejador_gameplay : MonoBehaviour
 
     public TMP_Text[] texto;
     public float segundos = 0;
-    public bool aumentando = false;
+    public bool aumentando = false,post;
     public bool on = false,firstlevel,UseEncryption;
     public string palabra_clave;
     public int enemigos_derrotados = 0;
@@ -36,6 +36,14 @@ public class manejador_gameplay : MonoBehaviour
     public void OnEnable()
     {
         on = true;
+    }
+
+    public void Start()
+    {
+        if (post)
+        {
+            on = true;
+        }
     }
 
     public void Awake()

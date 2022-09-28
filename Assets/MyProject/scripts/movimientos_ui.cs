@@ -67,7 +67,7 @@ public class movimientos_ui : MonoBehaviour
         }        
     }
 
-
+    
     private void OnEnable()
     {
         transform.localScale = new Vector3(0, 0, 0);
@@ -187,13 +187,16 @@ public class movimientos_ui : MonoBehaviour
 
     public void click_begin()
     {
+        f3 = 0.5f;
+        f4 = 0.5f;
+        f5 = 0.5f;
         if (bp) return;
         bp = true;
         StartCoroutine(gs4(0.0f, true));
         volumen.profile.TryGet<ColorAdjustments>(out s);
-        DOTween.To(() => f3, x => f3 = x, 0f, 5f).SetUpdate(true);
-        DOTween.To(() => f4, x => f4 = x, 0f, 5f).SetUpdate(true);
-        DOTween.To(() => f5, x => f5 = x, 0f, 5f).SetUpdate(true);
+        DOTween.To(() => f3, x => f3 = x, 0f, 1f).SetUpdate(true);
+        DOTween.To(() => f4, x => f4 = x, 0f, 1f).SetUpdate(true);
+        DOTween.To(() => f5, x => f5 = x, 0f, 1f).SetUpdate(true);
         e = true;
         Truama += 0.8f;
         a_s[0].pitch = Random.Range(0.85f, 1.2f);

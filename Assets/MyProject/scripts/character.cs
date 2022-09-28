@@ -32,7 +32,9 @@ public class character : MonoBehaviour
 
     public Volume volumen;
     private Vignette v;
-    private ColorAdjustments s;    
+    private ColorAdjustments s;
+    public int currentlevel;
+    public int nextlevel;
 
     float f=0.2f,f2=0f,f3=1f,f4=1f,f5=1f;
     Rigidbody rb;
@@ -75,8 +77,12 @@ public class character : MonoBehaviour
             s.saturation.value = f2;
             if (Input.GetKeyDown(KeyCode.R))
             {
-                SceneManager.LoadScene(0);
-            }            
+                SceneManager.LoadScene(currentlevel);
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                mui[0].click_pause();
+            }
         }
         if (stamina < maxstamina)
         {
@@ -89,7 +95,7 @@ public class character : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 mg[0].Save(mg[0].GD);
-                SceneManager.LoadScene(0);
+                SceneManager.LoadScene(nextlevel);
             }
             if (Input.GetKeyDown(KeyCode.Escape))
             {
