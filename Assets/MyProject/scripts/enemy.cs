@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.VFX;
 
 public class enemy : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class enemy : MonoBehaviour
 
     public bool dz;
 
+    public GameObject[] vfx_r;
+
 
     private void OnCollisionEnter(Collision other)
     {
@@ -31,6 +34,10 @@ public class enemy : MonoBehaviour
             //if (isdoor = !true) return;
             if (other.gameObject.GetComponent<espada_movimiento>().atacado) return;
             taked(other.gameObject.GetComponent<espada_movimiento>().damage);
+            Quaternion contact_r = Quaternion.FromToRotation(Vector3.up, other.contacts[0].point);
+            Vector3 contact_p = other.contacts[0].point;
+            Instantiate(vfx_r[0], contact_p, contact_r);
+            Invoke(nameof(destroy_vfx), 2f);
         }
     }
 
@@ -91,11 +98,23 @@ public class enemy : MonoBehaviour
                 {
                     if (other.gameObject.GetComponent<espada_movimiento>().atacado) return;
                     taked(other.gameObject.GetComponent<espada_movimiento>().damage);
-                    other.gameObject.GetComponent<espada_movimiento>().atacado = true;
-                }
+                    other.gameObject.GetComponent<espada_movimiento>().atacado = true;                    
+                    var collisionpoint = other.ClosestPoint(transform.position);
+                    var collisionnormal = transform.position - collisionpoint;
+                    Quaternion quaternioon = Quaternion.Euler(collisionnormal.x, collisionnormal.y, collisionnormal.z);
+                    Instantiate(vfx_r[1], collisionpoint, quaternioon);
+                
+                    Invoke(nameof(destroy_vfx), 2f);
+            }
                 else
                 {
                     taked(other.gameObject.GetComponent<espada_movimiento>().damage);
+                    var collisionpoint = other.ClosestPoint(transform.position);
+                    var collisionnormal = transform.position - collisionpoint;
+                    Quaternion quaternioon = Quaternion.Euler(collisionnormal.x, collisionnormal.y, collisionnormal.z);
+                    Instantiate(vfx_r[1], collisionpoint, quaternioon);
+
+                    Invoke(nameof(destroy_vfx), 2f);
                 }
             }
         }
@@ -104,6 +123,11 @@ public class enemy : MonoBehaviour
     {
         a_s[0].pitch = Random.Range(0.3f, 1.5f);
         a_s[0].PlayOneShot(clips1[2]);
+    }
+
+    public void destroy_vfx(GameObject vfx)
+    {
+        Destroy(vfx);
     }
 
 }

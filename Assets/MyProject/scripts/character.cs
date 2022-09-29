@@ -94,7 +94,7 @@ public class character : MonoBehaviour
             s.colorFilter.value = color;
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                mg[0].Save(mg[0].GD);
+                mg[0].Save(mg[0].GD,"level"+currentlevel.ToString()+".json");
                 SceneManager.LoadScene(nextlevel);
             }
             if (Input.GetKeyDown(KeyCode.Escape))

@@ -267,53 +267,7 @@ public class enemy_comportamiento : MonoBehaviour
                 Invoke(nameof(objectSpawnp), 1.25f);
                 StartCoroutine(reset_i(Random.Range(2f, 2.7f)));
 
-            }/*
-            else if (ataque < 3)
-            {
-                Vector3 direction = jugador.position - transform.position;
-                Quaternion toRotation = Quaternion.LookRotation(direction);
-
-                if (!wps2)
-                {
-                    if (!a)
-                    {
-                        agent.SetDestination(jugador.position);
-                        ChangeAnimationState(walk);
-                    }
-                }
-
-                Vector3 distanceToWalkPoint = transform.position - jugador.position;
-
-                //Walkpoint reached
-                if (distanceToWalkPoint.magnitude < ar)
-                {
-                    ar = 5f;
-                    agent.SetDestination(transform.position);
-                    wps2 = true;
-                    if (a)
-                    {
-                        transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 2.5f * Time.deltaTime);
-                        return;
-                    }
-                    a = true;
-                    DOTween.To(() => f, x => f = x, 10, 0.5f);
-                    StartCoroutine(reset_l(1f));
-                    ps.Play();
-
-                    a_s[0].volume = 0.6f;
-                    a_s[0].pitch = Random.Range(0.85f, 1.2f);
-                    a_s[0].PlayOneShot(clips1[2]);
-
-                    ChangeAnimationState(punch);
-                    Invoke(nameof(objectSpawna), 0.7f);
-                    StartCoroutine(reset_i(Random.Range(2f, 3.1f)));
-                }
-                else
-                {
-                    ar = 2f;
-                    wps2 = false;
-                }
-            }*/
+            }
         }
         else
         {

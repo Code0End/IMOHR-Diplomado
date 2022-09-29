@@ -12,8 +12,8 @@ public class manejador_gameplay : MonoBehaviour
     [SerializeField] private GameObject[] ts;
 
     public string dataPath = "";
-    public string dataFileName = "";
-    public string dataFileName2 = "";
+    public string[] dataFileName;
+
 
     public TMP_Text[] texto;
     public float segundos = 0;
@@ -26,8 +26,11 @@ public class manejador_gameplay : MonoBehaviour
 
     public GameData GD;
     public GameData[] GL = new GameData[2];
+    public LevelData[] LL = new LevelData[2];
+    public GameObject[] enemies;
 
-   public bool[] istheredata;
+    public bool[] istheredata;
+    bool DLoaded;
 
     public int[] levels;
     public string[] levelsoutcomes;
@@ -36,13 +39,48 @@ public class manejador_gameplay : MonoBehaviour
     public void OnEnable()
     {
         on = true;
+        if (LL[levelnum-1].enemy_quantity == 0)
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                Destroy(enemies[i]);
+            }
+        }
+        if (LL[levelnum - 1].enemy_quantity == 1)
+        {            
+        }
+        if (LL[levelnum - 1].enemy_quantity == 2)
+        {
+            for (int i = 3; i <= 9; i++)
+            {
+                if(enemies[i] != null)
+                enemies[i].SetActive(true);
+            }
+        }
     }
 
     public void Start()
     {
         if (post)
         {
-            on = true;
+            if (LL[levelnum - 1].enemy_quantity == 0)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Destroy(enemies[i]);
+                }
+            }
+            if (LL[levelnum - 1].enemy_quantity == 1)
+            {
+            }
+            if (LL[levelnum - 1].enemy_quantity == 2)
+            {
+                for (int i = 3; i <= 9; i++)
+                {
+                    if (enemies[i] != null)
+                        enemies[i].SetActive(true);
+                }
+            }
         }
     }
 
@@ -53,7 +91,7 @@ public class manejador_gameplay : MonoBehaviour
         if (firstlevel)
         {
             GL[0] = Load();
-            if(dataFileName2 != "")
+            if (dataFileName[1] != "")
                 GL[1] = Load();
         }
         if (GL[0] != null)
@@ -70,6 +108,14 @@ public class manejador_gameplay : MonoBehaviour
             levelsoutcomes[1] = GL[1].level_outcome;
             levelstimes[1] = GL[1].level_time; 
         }
+        LL[0] = LLoad();
+        LL[1] = LLoad();
+        if (LL[0] == null)
+            Save(new LevelData(), dataFileName[2]);
+        if (LL[1] == null)
+            Save(new LevelData(), dataFileName[3]);
+        GL[0] = Load();
+        GL[1] = Load();
     }
 
     void Update()
@@ -116,8 +162,6 @@ public class manejador_gameplay : MonoBehaviour
         {
             unos = GL[0].level_time.Split(char.Parse(":"));
             doses = texto[1].text.Split(char.Parse(":"));
-            Debug.Log(unos[0]);
-            Debug.Log(doses[0]);
             if (int.Parse(unos[0]) > int.Parse(doses[0]))
             {
                 GD.level_number = levelnum;
@@ -152,9 +196,9 @@ public class manejador_gameplay : MonoBehaviour
         //Save(GD);        
     }
 
-    public void Save(GameData data)
+    public void Save(GameData data, string dfn)
     {
-        string fullpath = Path.Combine(dataPath, dataFileName);
+        string fullpath = Path.Combine(dataPath, dfn);
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(fullpath));
@@ -180,13 +224,45 @@ public class manejador_gameplay : MonoBehaviour
         }
     }
 
+    public void Save(LevelData data, string dfn)
+    {
+        string fullpath = Path.Combine(dataPath, dfn);
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(fullpath));
+
+            string dataToStore = JsonUtility.ToJson(data, true);
+
+            if (UseEncryption)
+            {
+                dataToStore = EncryptDecrypt(dataToStore);
+            }
+
+            using (FileStream stream = new FileStream(fullpath, FileMode.Create))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write(dataToStore);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError("Ocurrió un error al momento de guardar: " + fullpath + "\n" + e);
+        }
+    }
+
     public GameData Load()
     {
         string fullpath;
-        if (dataFileName2 != "")
-            fullpath = Path.Combine(dataPath, dataFileName2);
+        if (!DLoaded)
+        {
+            fullpath = Path.Combine(dataPath, dataFileName[0]);
+            DLoaded = true;
+        }
         else
-            fullpath = Path.Combine(dataPath, dataFileName);
+            fullpath = Path.Combine(dataPath, dataFileName[1]);
+
         GameData loadedData = null;
         if (File.Exists(fullpath))
         {
@@ -216,6 +292,49 @@ public class manejador_gameplay : MonoBehaviour
         return loadedData;
     }
 
+    public LevelData LLoad()
+    {
+        string fullpath;
+        if (dataFileName[1] != "")
+            fullpath = Path.Combine(dataPath, dataFileName[1]);
+        else
+            fullpath = Path.Combine(dataPath, dataFileName[0]);
+        if (dataFileName[2] != "")
+        {
+            fullpath = Path.Combine(dataPath, dataFileName[2]);
+            if (dataFileName[3] != "")
+                fullpath = Path.Combine(dataPath, dataFileName[3]);
+        }
+
+        LevelData loadedData = null;
+        if (File.Exists(fullpath))
+        {
+            try
+            {
+                string dataToLoad = "";
+                using (FileStream stream = new FileStream(fullpath, FileMode.Open))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        dataToLoad = reader.ReadToEnd();
+                    }
+                }
+
+                if (UseEncryption)
+                {
+                    dataToLoad = EncryptDecrypt(dataToLoad);
+                }
+
+                loadedData = JsonUtility.FromJson<LevelData>(dataToLoad);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Ocurrió un error al momento de cargar: " + fullpath + "\n" + e);
+            }
+        }
+        return loadedData;
+    }
+
     private string EncryptDecrypt(string data)
     {
         string modifiedData = "";
@@ -240,5 +359,19 @@ public class GameData
         this.level_number = 0;
         this.level_outcome = "n";
         this.level_outcome = "0:0";
+    }
+}
+
+public class LevelData
+{
+    public int level_number;
+
+    public int enemy_quantity;
+
+    public LevelData()
+    {
+        this.level_number = 1;
+        this.enemy_quantity = 1;
+
     }
 }
