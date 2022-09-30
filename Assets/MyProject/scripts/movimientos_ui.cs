@@ -69,7 +69,7 @@ public class movimientos_ui : MonoBehaviour
 
     
     private void OnEnable()
-    {
+    {       
         transform.localScale = new Vector3(0, 0, 0);
         entrada();
         if (levelshowcase)
@@ -263,6 +263,7 @@ public class movimientos_ui : MonoBehaviour
         f5 = 1;
         if (bp) return;
         gs4(0f,true);
+        a_s[1].Pause();
         bp = true;
         e = true;
         volumen.profile.TryGet<ColorAdjustments>(out s);
@@ -304,6 +305,7 @@ public class movimientos_ui : MonoBehaviour
         if (bp) return;
         bp = true;
         e = true;
+        a_s[1].Play();
         volumen.profile.TryGet<ColorAdjustments>(out s);
         DOTween.To(() => s.colorFilter.value, x => s.colorFilter.value = x, new Vector3(1f, 1f,1f), 0.2f).SetUpdate(true);
         //DOTween.To(() => f4, x => f4 = x, 1f, 1f).SetUpdate(true);
@@ -401,10 +403,12 @@ public class movimientos_ui : MonoBehaviour
     {
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     void Pausar()
     {
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
     }
 }

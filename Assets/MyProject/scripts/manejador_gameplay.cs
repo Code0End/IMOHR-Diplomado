@@ -38,6 +38,7 @@ public class manejador_gameplay : MonoBehaviour
 
     public void OnEnable()
     {
+        a_s[0].Play();
         on = true;
         if (LL[levelnum-1].enemy_quantity == 0)
         {
@@ -63,6 +64,7 @@ public class manejador_gameplay : MonoBehaviour
     {
         if (post)
         {
+            a_s[0].Play();
             if (LL[levelnum - 1].enemy_quantity == 0)
             {
                 for (int i = 0; i < 4; i++)
@@ -134,6 +136,7 @@ public class manejador_gameplay : MonoBehaviour
 
     public void gameend()
     {
+        a_s[0].Stop();
         ts[0].GetComponent<movimientos_ui>().salida();
         ts[1].SetActive(true);
         ts[2].SetActive(true);
@@ -160,7 +163,8 @@ public class manejador_gameplay : MonoBehaviour
         string[] doses;
         if (istheredata[0])
         {
-            unos = GL[0].level_time.Split(char.Parse(":"));
+            //unos = GL[0].level_time.Split(char.Parse(":"));
+            unos = levelstimes[0].Split(char.Parse(":"));
             doses = texto[1].text.Split(char.Parse(":"));
             if (int.Parse(unos[0]) > int.Parse(doses[0]))
             {
@@ -179,12 +183,16 @@ public class manejador_gameplay : MonoBehaviour
                 }
                 else
                 {
-                    GD = GL[0];
+                    GD.level_number = levels[0];
+                    GD.level_outcome = levelsoutcomes[0];
+                    GD.level_time = levelstimes[0];
                 }
             }
             else
             {
-                GD = GL[0];
+                GD.level_number = levels[0];
+                GD.level_outcome = levelsoutcomes[0];
+                GD.level_time = levelstimes[0];
             }
         }
         else
