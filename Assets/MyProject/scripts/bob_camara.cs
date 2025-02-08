@@ -8,6 +8,7 @@ public class bob_camara : MonoBehaviour
     [SerializeField, Range(0, 30)] private float frecuencia = 10.0f;
 
     [SerializeField] private Transform camara;
+    public bool off = false;
     [SerializeField] private Transform padrecamara;
 
     private float velocidadcambio = 3.0f;
@@ -69,6 +70,7 @@ public class bob_camara : MonoBehaviour
 
     private void hacermov(Vector3 mov)
     {
+        if (off) return;
         camara.localPosition += mov;
     }
 

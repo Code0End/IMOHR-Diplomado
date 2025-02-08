@@ -13,7 +13,7 @@ public class controlador_camara : MonoBehaviour
     float roty;
 
     public float tilta;
-    public bool d,post;
+    public bool d,post,off = false;
     float iv = 0f;
     float iv2 = 0f;
     float iv3 = 0f;
@@ -44,6 +44,7 @@ public class controlador_camara : MonoBehaviour
 
     void Update()
     {
+        if (off) return;
         float mousex = Input.GetAxisRaw("Mouse X") * sens;
         float mousey = Input.GetAxisRaw("Mouse Y") * sens;
 

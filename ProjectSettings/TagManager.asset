@@ -10,6 +10,8 @@ TagManager:
   - shield
   - dz
   - ez
+  - gamemanager
+  - camaracontroller
   layers:
   - Default
   - TransparentFX

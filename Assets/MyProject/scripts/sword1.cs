@@ -131,7 +131,7 @@ public class sword1 : MonoBehaviour
         a_s[0].pitch = Random.Range(0.85f, 1.2f);
         a_s[0].PlayOneShot(clips1[0]);
         StartCoroutine(reset_attack_cooldown(0.4f));
-        p_s[0].Play(false);
+        //p_s[0].Play(false);
         StartCoroutine(reset_p(0.6f));
     }
 
@@ -161,7 +161,7 @@ public class sword1 : MonoBehaviour
         mov.caer();
         a_s[0].pitch = Random.Range(0.8f, 0.85f);
         a_s[0].PlayOneShot(clips1[0]);
-        p_s[0].Play(false);
+        //p_s[0].Play(false);
     }
 
     public void swordattack_fall()

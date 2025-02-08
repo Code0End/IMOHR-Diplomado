@@ -118,12 +118,12 @@ public class controlador_movimiento : MonoBehaviour
 
         if (dash_t > 0)
             dash_t -= Time.deltaTime;
-
+        /*
         var em = p_s[0].emission;
         if (parts && armado)
             em.enabled = true;
         else
-            em.enabled = false;
+            em.enabled = false; */
     }
 
     private void FixedUpdate()
@@ -238,6 +238,10 @@ public class controlador_movimiento : MonoBehaviour
     private void dashd()
     {
         rb.AddForce(fuerzacondelay * 200, ForceMode.Force);
+        if (suelo)
+        {
+            rb.AddForce(transform.up * 300, ForceMode.Force);
+        }
         velocidad = dash_s;
         camara.cambiarfov(105);
     }

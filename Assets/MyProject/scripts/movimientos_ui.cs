@@ -10,12 +10,13 @@ using TMPro;
 
 public class movimientos_ui : MonoBehaviour
 {
-    public int estado = 0,levelnum=0;
+    public int estado = 0, levelnum = 0;
     public bool destruir = false, levelshowcase;
 
     public GameObject padrecam;
 
     [SerializeField] controlador_menu c_m;
+    [SerializeField] controlador_camara c_c;
 
     [SerializeField] private AudioSource[] a_s;
     [SerializeField] private AudioClip[] clips1;
@@ -36,11 +37,14 @@ public class movimientos_ui : MonoBehaviour
 
     public List<GameObject> elementos_apagar;
     public List<GameObject> elementos_encender;
+    public List<Button> botonesapa;
+    public List<Button> botonesence;
+    public bool apaga_enciende = false;
 
     public Volume volumen;
     public movimientos_ui mui1;
     private ColorAdjustments s;
-    bool e,bp,paused,levelloaded;
+    bool e, bp, paused, levelloaded;
 
     public float f3 = 1f, f4 = 1f, f5 = 1f;
 
@@ -64,12 +68,12 @@ public class movimientos_ui : MonoBehaviour
             Vector3 newpos = Vector3.Lerp(transform.localPosition, Vector3.zero, Time.unscaledDeltaTime);
             transform.localPosition = newpos;
             transform.localRotation = Quaternion.Euler(newpos * traumarotmag);
-        }        
+        }
     }
 
-    
+
     private void OnEnable()
-    {       
+    {
         transform.localScale = new Vector3(0, 0, 0);
         entrada();
         if (levelshowcase)
@@ -171,7 +175,7 @@ public class movimientos_ui : MonoBehaviour
         Truama += 0.8f;
         a_s[0].pitch = Random.Range(0.85f, 1.2f);
         a_s[0].PlayOneShot(clips1[0]);
-        StartCoroutine(gs6(1f,levelnum));
+        StartCoroutine(gs6(1f, levelnum));
     }
     public void click()
     {
@@ -224,6 +228,7 @@ public class movimientos_ui : MonoBehaviour
     {
         if (bp) return;
         bp = true;
+        Button_apagar();
         StartCoroutine(gs4(0.0f, true));
         volumen.profile.TryGet<ColorAdjustments>(out s);
         DOTween.To(() => f3, x => f3 = x, 0f, 5f).SetUpdate(true);
@@ -232,7 +237,7 @@ public class movimientos_ui : MonoBehaviour
         Truama += 0.8f;
         a_s[0].pitch = Random.Range(0.85f, 1.2f);
         a_s[0].PlayOneShot(clips1[0]);
-        Invoke(nameof(gs3), 0f);       
+        Invoke(nameof(gs3), 0f);
     }
 
     public void click_options()
@@ -262,7 +267,7 @@ public class movimientos_ui : MonoBehaviour
         f4 = 1;
         f5 = 1;
         if (bp) return;
-        gs4(0f,true);
+        gs4(0f, true);
         a_s[1].Pause();
         bp = true;
         e = true;
@@ -297,7 +302,6 @@ public class movimientos_ui : MonoBehaviour
 
     public void click_closepause()
     {
-        continuar();
         mui1.paused = false;
         f3 = 0.5f;
         f4 = 0.5f;
@@ -307,13 +311,14 @@ public class movimientos_ui : MonoBehaviour
         e = true;
         a_s[1].Play();
         volumen.profile.TryGet<ColorAdjustments>(out s);
-        DOTween.To(() => s.colorFilter.value, x => s.colorFilter.value = x, new Vector3(1f, 1f,1f), 0.2f).SetUpdate(true);
+        DOTween.To(() => s.colorFilter.value, x => s.colorFilter.value = x, new Vector3(1f, 1f, 1f), 0.2f).SetUpdate(true);
         //DOTween.To(() => f4, x => f4 = x, 1f, 1f).SetUpdate(true);
         //DOTween.To(() => f5, x => f5 = x, 1f, 1f).SetUpdate(true);
         Truama += 0.8f;
         a_s[0].pitch = Random.Range(0.85f, 1.2f);
         a_s[0].PlayOneShot(clips1[0]);
-        gs3(); ;
+        gs3();
+        Invoke(nameof(continuar), 0f);
     }
 
     public void gs()
@@ -359,13 +364,15 @@ public class movimientos_ui : MonoBehaviour
             elemento.SetActive(true);
             elemento.GetComponent<movimientos_ui>().bp = false;
         }
+        Button_encender();
         e = false;
     }
 
-    IEnumerator gs4(float t,bool vb)
+    IEnumerator gs4(float t, bool vb)
     {
         yield return new WaitForSeconds(t);
         bp = false;
+        Button_apagar();
         if (vb)
         {
             foreach (GameObject elemento in elementos_apagar)
@@ -379,7 +386,7 @@ public class movimientos_ui : MonoBehaviour
             {
                 elemento.GetComponent<movimientos_ui>().bp = false;
             }
-        }   
+        }
     }
 
     public float Truama
@@ -404,11 +411,38 @@ public class movimientos_ui : MonoBehaviour
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        //c_c = GameObject.FindGameObjectWithTag("cameracontroller");
+        GameObject.FindGameObjectWithTag("camaracontroller").GetComponent<controlador_camara>().off = false;
+        GameObject.FindGameObjectWithTag("Player").GetComponent<bob_camara>().off = false;
+        //c_c.off = false;
     }
     void Pausar()
     {
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.Confined;
+        c_c.off = true;
         Cursor.visible = true;
+        GameObject.FindGameObjectWithTag("Player").GetComponent<bob_camara>().off = true;
+    }
+
+    void Button_apagar() {
+        if (apaga_enciende == true)
+        {
+            foreach (Button boton in botonesapa)
+            {
+                boton.interactable = false;
+            }
+        }
+    }
+
+    void Button_encender()
+    {
+        if (apaga_enciende == true)
+        {
+            foreach (Button boton in botonesence)
+            {
+                boton.interactable = true;
+            }
+        }
     }
 }
